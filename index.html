@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Content Creator Canvas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+        }
+        .sidebar {
+            width: 25%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .main-content {
+            width: 75%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            margin-bottom: 15px;
+            color: #fe2c55;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #fe2c55;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #e02448;
+        }
+        select, textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+        .preview {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        #trending-data, #insights-data {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .chart {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar, .main-content {
+                width: 100%;
+            }
+            .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>เมนู</h2>
+            <button class="button" onclick="showSection('create')">สร้างคอนเทนต์</button>
+            <button class="button" onclick="showSection('insights')">ดูข้อมูลเชิงลึก</button>
+            <button class="button" onclick="showSection('settings')">ตั้งค่าบัญชี</button>
+            <h3>ข้อมูลเรียลไทม์</h3>
+            <button class="button" onclick="fetchRealTimeData()">ดึงข้อมูลจาก TikTok</button>
+            <div id="trending-data"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>สร้างคอนเทนต์ TikTok</h1>
+
+            <!-- Create Content Section -->
+            <div id="create-section">
+                <!-- Category Selection -->
+                <h3>เลือกหมวดหมู่</h3>
+                <select id="category" onchange="updateScriptExample()">
+                    <option value="technology">เทคโนโลยี</option>
+                    <option value="beauty">ความงาม</option>
+                    <option value="food">อาหาร</option>
+                    <option value="health">สุขภาพ</option>
+                    <option value="fashion">แฟชั่น</option>
+                    <option value="travel">ท่องเที่ยว</option>
+                    <option value="education">การศึกษา</option>
+                    <option value="entertainment">บันเทิง</option>
+                    <option value="lifestyle">ไลฟ์สไตล์</option>
+                    <option value="gaming">เกมมิ่ง</option>
+                    <option value="sports">กีฬา</option>
+                    <option value="diy">DIY</option>
+                    <option value="pets">สัตว์เลี้ยง</option>
+                </select>
+
+                <!-- Video Length -->
+                <h3>เลือกความยาววิดีโอ</h3>
+                <select id="video-length" onchange="adjustScriptLength()">
+                    <option value="20">20 วินาที</option>
+                    <option value="30">30 วินาที</option>
+                    <option value="60">60 วินาที</option>
+                </select>
+
+                <!-- Hook Selection -->
+                <h3>เลือกประเภท Hook</h3>
+                <select id="hook-type" onchange="updateScriptExample()">
+                    <option value="problem">Problem Hook</option>
+                    <option value="curiosity">Curiosity Hook</option>
+                    <option value="shock">Shock Hook</option>
+                    <option value="story">Story Hook</option>
+                    <option value="challenge">Challenge Hook</option>
+                    <option value="random">สุ่มเลือก</option>
+                </select>
+
+                <!-- Script Editor -->
+                <h3>ปรับแต่งบทพูด</h3>
+                <select id="speech-style" onchange="updateScriptExample()">
+                    <option value="formal">เป็นทางการ</option>
+                    <option value="casual">ไม่เป็นทางการ</option>
+                    <option value="humorous">ตลก</option>
+                    <option value="serious">จริงจัง</option>
+                </select>
+                <select id="tone" onchange="updateScriptExample()">
+                    <option value="fun">สนุกสนาน</option>
+                    <option value="calm">สงบ</option>
+                    <option value="exciting">ตื่นเต้น</option>
+                </select>
+                <select id="target-audience" onchange="updateScriptExample()">
+                    <option value="teen">วัยรุ่น</option>
+                    <option value="adult">ผู้ใหญ่</option>
+                    <option value="family">ครอบครัว</option>
+                </select>
+                <textarea id="script" rows="5" placeholder="พิมพ์บทพูดที่นี่..."></textarea>
+                <button class="button" onclick="addFillerWords()">เพิ่มคำฟิลเลอร์</button>
+                <button class="button" onclick="fetchArticleData()">ดึงข้อมูลบทความ</button>
+
+                <!-- CTA Selection -->
+                <h3>เลือก Call to Action (CTA)</h3>
+                <select id="cta">
+                    <option value="follow-tips">กดติดตามเพื่อรับเคล็ดลับเพิ่มเติม</option>
+                    <option value="buy-discount">ซื้อสินค้าตอนนี้เพื่อรับส่วนลด</option>
+                    <option value="share-friends">แชร์คลิปนี้กับเพื่อน</option>
+                    <option value="subscribe">สมัครสมาชิกช่องของเรา</option>
+                    <option value="visit-website">เยี่ยมชมเว็บไซต์เพื่อดูรายละเอียด</option>
+                    <option value="download-app">ดาวน์โหลดแอปวันนี้</option>
+                    <option value="join-event">เข้าร่วมกิจกรรมลุ้นรับรางวัล</option>
+                    <option value="random">สุ่มเลือก</option>
+                </select>
+                <button class="button" onclick="addCTA()">เพิ่ม CTA</button>
+
+                <!-- Preview -->
+                <div class="preview">
+                    <h3>ตัวอย่างคอนเทนต์</h3>
+                    <p id="preview-text">ตัวอย่างจะแสดงที่นี่...</p>
+                    <button class="button" onclick="updatePreview()">ดูตัวอย่าง</button>
+                    <button class="button" onclick="editContent()">ปรับปรุงคอนเทนต์</button>
+                </div>
+
+                <!-- Post & Share -->
+                <button class="button" onclick="postToTikTok()">โพสต์ทันที</button>
+                <button class="button" onclick="saveProject()">บันทึกเป็นโครงการ</button>
+                <button class="button" onclick="connectTikTok()">เชื่อมต่อบัญชี TikTok</button>
+            </div>
+
+            <!-- Insights Section -->
+            <div id="insights-section" style="display: none;">
+                <h2>ข้อมูลเชิงลึก</h2>
+                <div id="insights-data">
+                    <p>จำนวนผู้ติดตาม: <span id="followers">0</span></p>
+                    <p>การมีส่วนร่วม: <span id="engagement">0%</span></p>
+                    <p>ยอดวิวเฉลี่ย: <span id="avg-views">0</span></p>
+                    <p>อัตราการรับชมจนจบ: <span id="completion-rate">0%</span></p>
+                    <p>ระยะเวลาการดูเฉลี่ย: <span id="avg-watch-time">0 วินาที</span></p>
+                    <div id="growth-chart" class="chart"></div>
+                    <p>การวิเคราะห์อารมณ์คอมเมนต์: <span id="sentiment">กำลังโหลด...</span></p>
+                    <p>เปรียบเทียบกับช่องอื่น: <span id="comparison">กำลังโหลด...</span></p>
+                </div>
+                <button class="button" onclick="fetchInsights()">วิเคราะห์ช่อง</button>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" style="display: none;">
+                <h2>ตั้งค่าบัญชี</h2>
+                <input type="text" id="tiktok-username" placeholder="ชื่อผู้ใช้ TikTok">
+                <button class="button" onclick="saveSettings()">บันทึกการตั้งค่า</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TIKTOK_API_KEY = 'awr7n9777yirxtlj';
+        const TIKTOK_API_SECRET = 'rHfPfh0hpoEnDt8G914lRa08k0UF6xPw';
+
+        // อัปเดตข้อมูลเรียลไทม์ทุก 1 นาที
+        setInterval(() => {
+            fetchRealTimeData();
+            fetchInsights();
+        }, 60000);
+
+        function showSection(section) {
+            document.getElementById('create-section').style.display = section === 'create' ? 'block' : 'none';
+            document.getElementById('insights-section').style.display = section === 'insights' ? 'block' : 'none';
+            document.getElementById('settings-section').style.display = section === 'settings' ? 'block' : 'none';
+        }
+
+        function updateScriptExample() {
+            const category = document.getElementById('category').value;
+            let hook = document.getElementById('hook-type').value;
+            const style = document.getElementById('speech-style').value;
+            const tone = document.getElementById('tone').value;
+            const audience = document.getElementById('target-audience').value;
+
+            if (hook === 'random') {
+                const hooks = ['problem', 'curiosity', 'shock', 'story', 'challenge'];
+                hook = hooks[Math.floor(Math.random() * hooks.length)];
+            }
+
+            let example = '';
+            if (hook === 'problem') {
+                example = category === 'beauty' ? 'ผิวแห้งแก้ยังไงดี?' : 'คุณเคยเจอปัญหานี้ไหม?';
+            } else if (hook === 'curiosity') {
+                example = category === 'food' ? 'รู้ไหมว่าทำไมอาหารนี้ถึงอร่อย?' : 'อยากรู้ไหมว่าทำไมถึงเป็นแบบนี้?';
+            } else if (hook === 'shock') {
+                example = category === 'technology' ? 'เทคโนโลยีนี้เปลี่ยนชีวิตคุณได้!' : 'เชื่อไหมว่านี่คือความจริง?';
+            } else if (hook === 'story') {
+                example = category === 'travel' ? 'เมื่อวานฉันไปเจอสถานที่ลับ...' : 'เมื่อวานฉันเจออะไรบางอย่าง...';
+            } else if (hook === 'challenge') {
+                example = category === 'health' ? 'ลองทำแบบนี้ 7 วันสิ!' : 'คุณกล้าทำตามฉันไหม?';
+            }
+
+            if (style === 'humorous') example = `เฮ้ย! ${example} ฮาด้วยนะ`;
+            if (tone === 'exciting') example = `${example} โคตรเจ๋งเลย!`;
+            if (audience === 'teen') example = `${example} แบบชิค ๆ วัยรุ่นชอบ`;
+
+            document.getElementById('script').value = example;
+        }
+
+        function adjustScriptLength() {
+            const length = document.getElementById('video-length').value;
+            let script = document.getElementById('script').value;
+            if (length === '20') script = script.substring(0, 50);
+            else if (length === '30') script = script.substring(0, 100);
+            else if (length === '60') script = script.substring(0, 200);
+            document.getElementById('script').value = script;
+        }
+
+        function addFillerWords() {
+            const fillers = ['คือว่า', 'อะไรแบบ', 'เหมือนแบบ', 'เอ่อ', 'นี่ไง', 'แบบว่า', 'อ่ะ', 'เนาะ'];
+            const randomFiller = fillers[Math.floor(Math.random() * fillers.length)];
+            let script = document.getElementById('script').value;
+            script += ` ${randomFiller}...`;
+            document.getElementById('script').value = script;
+        }
+
+        function fetchArticleData() {
+            const category = document.getElementById('category').value;
+            let script = document.getElementById('script').value;
+            // จำลองการดึงข้อมูลจากเว็บไซต์บทความ
+            script += ` (ข้อมูลจากบทความ: ${category === 'beauty' ? 'เคล็ดลับผิวสวยจากธรรมชาติ' : 'เนื้อหาล่าสุดจากเว็บ')}`;
+            document.getElementById('script').value = script;
+        }
+
+        function addCTA() {
+            let cta = document.getElementById('cta').value;
+            if (cta === 'random') {
+                const ctas = ['follow-tips', 'buy-discount', 'share-friends', 'subscribe', 'visit-website', 'download-app', 'join-event'];
+                cta = ctas[Math.floor(Math.random() * ctas.length)];
+            }
+            let script = document.getElementById('script').value;
+            script += ` ${cta === 'follow-tips' ? 'กดติดตามเพื่อรับเคล็ดลับเพิ่มเติม!' : cta === 'buy-discount' ? 'ซื้อสินค้าตอนนี้เพื่อรับส่วนลด!' : cta === 'share-friends' ? 'แชร์คลิปนี้กับเพื่อน!' : cta === 'subscribe' ? 'สมัครสมาชิกช่องของเรา!' : cta === 'visit-website' ? 'เยี่ยมชมเว็บไซต์เพื่อดูรายละเอียด!' : cta === 'download-app' ? 'ดาวน์โหลดแอปวันนี้!' : 'เข้าร่วมกิจกรรมลุ้นรับรางวัล!'}`;
+            document.getElementById('script').value = script;
+        }
+
+        function updatePreview() {
+            const script = document.getElementById('script').value;
+            document.getElementById('preview-text').innerText = script;
+        }
+
+        function editContent() {
+            alert('กลับไปแก้ไขคอนเทนต์');
+        }
+
+        function fetchRealTimeData() {
+            const trendingData = document.getElementById('trending-data');
+            trendingData.innerHTML = 'กำลังดึงข้อมูล #trending จาก TikTok...';
+            setTimeout(() => {
+                trendingData.innerHTML = `
+                    #ยอดนิยม: #TikTokThailand #${document.getElementById('category').value}<br>
+                    อัปเดต: ${new Date().toLocaleTimeString()}
+                `;
+            }, 1000);
+        }
+
+        function postToTikTok() {
+            alert('โพสต์ไปยัง TikTok เรียบร้อยแล้ว (จำลอง)');
+        }
+
+        function saveProject() {
+            alert('บันทึกเป็นโครงการเรียบร้อยแล้ว');
+        }
+
+        function connectTikTok() {
+            alert('เชื่อมต่อบัญชี TikTok ด้วย API Key: ' + TIKTOK_API_KEY);
+        }
+
+        function fetchInsights() {
+            const insightsData = document.getElementById('insights-data');
+            insightsData.innerHTML = 'กำลังวิเคราะห์ช่องจาก TikTok...';
+            setTimeout(() => {
+                document.getElementById('followers').innerText = '10,000';
+                document.getElementById('engagement').innerText = '15%';
+                document.getElementById('avg-views').innerText = '5,000';
+                document.getElementById('completion-rate').innerText = '80%';
+                document.getElementById('avg-watch-time').innerText = '45 วินาที';
+                document.getElementById('sentiment').innerText = 'บวก 70%, ลบ 20%, เป็นกลาง 10%';
+                document.getElementById('comparison').innerText = 'ดีกว่าค่าเฉลี่ยในหมวดหมู่ 10%';
+                // จำลองกราฟ (ต้องใช้ library เช่น Chart.js ในอนาคต)
+                document.getElementById('growth-chart').innerHTML = 'กราฟการเติบโต (7 วัน: +5%, 30 วัน: +15%)';
+            }, 1000);
+        }
+
+        function saveSettings() {
+            const username = document.getElementById('tiktok-username').value;
+            alert('บันทึกการตั้งค่าสำหรับผู้ใช้: ' + username);
+        }
+
+        // เริ่มต้นด้วยหน้า "สร้างคอนเทนต์"
+        showSection('create');
+        fetchRealTimeData();
+        fetchInsights();
+    </script>
+</body>
+</html>
